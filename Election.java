@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 
 public class Election {
   private Candidate[] candidates;
@@ -12,13 +13,66 @@ public class Election {
     candidates = new Candidate[maxCandidates];
     numCandidates = 0;
   }
-  public int getNumCandidates() {
-    return numCandidates;
+  
+  public void addCandidate(Candidate candidate) {
+    // checks if I can add candidate
+    if(!(getNumCandidates()<=candidates.length-1)) {
+      return;
+    }
+    for(int i = 0; i<candidates.length;i++) {
+      if(candidates[i].equals(candidate)) {
+        throw new IllegalArgumentException("Candidate is present already");
+      }
+    }
+    
+    candidates[getNumCandidates()] = candidate; // appends to the very end
   }
+  
+  public void removeCandidate(Candidate candidate) {
+    int numCands = getNumCandidates();
+    if(numCands==0) {
+      throw new IllegalStateException("Remove from empty candidates list");
+    }
+    int voteIndex = -1;
+    for(int i = 0; i<candidates.length;i++) {
+      if(candidates[i].equals(candidate)) {
+        voteIndex = i;
+        break;
+      }
+    }
+    if(voteIndex==-1) {
+      throw new NoSuchElementException("Invalid Candidate");
+    }
+    // now that voteIndex exists, we must shift everything
+    for(int i = voteIndex; i<numCands; i++) {
+      candidates[i] = candidates[i+1];
+    }
+    candidates[numCands] = null;
+    
+  }
+  
+  public Candidate findWinner() {
+    //candidates.length >=1
+    Candidate temp = candidates[0]; // could be null so returning null is fine
+    
+    return temp;
+  }
+  
+  public int getNumCandidates() {
+    int z = 0;
+    for(int i = 0; i<candidates.length;i++) {
+      if(candidates[i]==null) {
+        break;
+      }
+      z++;
+    }
+    return z;
+  }
+  
   public int capacity() {
     return candidates.length;
   }
-  
+ 
   
   
   
