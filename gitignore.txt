@@ -1,0 +1,4 @@
+/Ballot.class
+/Candidate.class
+/Election.class
+/ElectionManagerTester.class
