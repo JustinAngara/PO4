@@ -1,5 +1,29 @@
-// TODO: file header
-
+//////////////// FILE HEADER (INCLUDE IN EVERY FILE) //////////////////////////
+//
+// Title:    (descriptive title of the program making use of this file)
+// Course:   CS 300 Fall 2024
+//
+// Author:   Evan Alexander
+// Email:     elalexander@wisc.edu
+// Lecturer: Hobbes LeGault
+//
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ///////////////////
+// 
+// Partner Name:    Justin Angara
+// Partner Email:   jangara@wisc.edu
+// Partner Lecturer's Name: Hoobes LeGault
+// 
+// VERIFY THE FOLLOWING BY PLACING AN X NEXT TO EACH TRUE STATEMENT:
+//   _/_ Write-up states that pair programming is allowed for this assignment.
+//   _/_ We have both read and understand the course Pair Programming Policy.
+//   _/_ We have registered our team prior to the team registration deadline.
+//
+//////////////////////// ASSISTANCE/HELP CITATIONS ////////////////////////////
+//
+// Persons:         (identify each by name and describe how they helped)
+// Online Sources:  (identify each by URL and describe how it helped)
+//
+///////////////////////////////////////////////////////////////////////////////
 import java.util.NoSuchElementException;
 
 /**
@@ -50,7 +74,55 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testCandidateConstructorExceptions() {
-    return false; // TODO
+    // this will be temp variable to check
+    boolean hasHitError = false;
+    
+    Candidate c;
+    // test for null name
+    try {
+      c = new Candidate(null, "party");
+    } catch (IllegalArgumentException e) {
+      hasHitError = true; // exception hit so we good
+    }
+    if(!hasHitError) {
+      return false;
+    }
+    hasHitError = false;
+    
+    // test for empty name
+    try {
+      c = new Candidate("", "party");
+    } catch (IllegalArgumentException e) {
+      hasHitError = true; // exception hit so we good
+    }
+    if(!hasHitError) {
+      return false;
+    }
+    hasHitError = false;
+    
+    // test for null party
+    try {
+      c = new Candidate("wasd", null); 
+    } catch (IllegalArgumentException e) {
+      hasHitError = true; // exception hit so we good
+    }
+    if(!hasHitError) {
+      return false;
+    }
+    hasHitError = false;
+    
+    // test for empty party
+    // test for empty name
+    try {
+      c = new Candidate("awfh", "");
+    } catch (IllegalArgumentException e) {
+      hasHitError = true;
+    }
+    if(!hasHitError) {
+      return false;
+    }
+    
+    return true;
   }
 
   /**
@@ -178,10 +250,37 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotSetup() {
-    // Phase 1: add elections to the Ballot class
-    // Phase 2: create a Ballot and verify that it has the correct number of elections
-    // (hint: use toString())
-    return false; // TODO
+    Election election = new Election("Sportsball", 10);
+    Candidate c1 = new Candidate("lebron james", "basketball");
+    Candidate c2 = new Candidate("messi", "soccer");
+    election.addCandidate(c1); election.addCandidate(c2);
+    Election election1 = new Election("Sportsball1", 10);
+    Candidate c3 = new Candidate("lebron james", "basketball");
+    Candidate c4 = new Candidate("messi", "soccer");
+    // i changed the line below this from election.addCandidate(c4) - > election1.addCandidate(c4) cuz of compiling errors
+    election1.addCandidate(c3); election1.addCandidate(c4);
+    Ballot.addElection(election1);
+    Ballot.addElection(election);
+    Ballot ballot = new Ballot();
+    if(ballot.hasVoted("Sportsball")||ballot.hasVoted("Sportsball1")) {
+      return false;
+    }
+    ballot.vote("Sportsball", c1);
+    if(!ballot.hasVoted("Sportsball")) {
+      return false;
+    }
+    try {
+      ballot.vote("Sportsball", c2);
+      System.out.println("Error: Voting twice in the same election should throw an exception.");
+      return false;
+  } catch (IllegalStateException e) {
+      
+  }
+  ballot.vote("Sportsball1", c4);
+  if(!ballot.hasVoted("Sportsball1")) {
+    return false;
+  }
+  return true;
   }
 
   /**
@@ -221,7 +320,7 @@ public class ElectionManagerTester {
    * @return true if and only if all the tests return true, false otherwise
    */
   public static boolean runAllRequiredTests() {
-    
+   
     boolean test1 = testCandidateConstructorAndGetters();
     System.out.println("testCandidateConstructorAndGetters(): " + (test1 ? "PASS" : "FAIL"));
     
@@ -275,6 +374,7 @@ public class ElectionManagerTester {
    */
   public static void main(String[] args) {
     System.out.println("runAllRequiredTests(): " + runAllRequiredTests());
+    System.out.println("working now");
   }
 
 
