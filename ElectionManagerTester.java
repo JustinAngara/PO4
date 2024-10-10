@@ -466,14 +466,14 @@ public class ElectionManagerTester {
         if (ballot.hasVoted("President") || ballot.hasVoted("Senator")) {
             return false;
         }
-        System.out.println("this is fine rn");
+     
         // Step 5: Vote in both elections
         ballot.vote("President", candidate1);
         ballot.vote("Senator", candidate2);
   
         // Step 6: Ensure both elections have been voted on
         if (!ballot.hasVoted("President") || !ballot.hasVoted("Senator")) {
-            System.out.println("Error: Ballot should reflect votes.");
+
             return false;
         }
   
