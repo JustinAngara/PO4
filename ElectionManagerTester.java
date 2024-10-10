@@ -134,7 +134,19 @@ public class ElectionManagerTester {
    */
 
   public static boolean testElectionConstructorAndGetters() {
-    return false; // TODO
+    Election election = new Election("these tester methods are killing me", 20);
+    election.addCandidate(new Candidate("mid","method"));
+    election.addCandidate(new Candidate("don't make us do this again","method"));
+    if(!(election.capacity()==20)) {
+      return false;
+    }
+    if(!(election.getNumCandidates()==2)) {
+      return false;
+    }
+    if(!(election.SEAT_NAME.equals("these tester methods are killing me"))) {
+      return false;
+    }
+    return true; // TODO
   }
 
   /**
@@ -145,7 +157,15 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testElectionConstructorExceptions() {
-    return false; // TODO
+    int size = 0;
+    boolean temp = false;
+    try {
+      Election em = new Election("better work",-10);
+    } catch (IllegalArgumentException e) {
+      // negative value therefore will hit the illegal catch statement
+      temp = true;
+    }
+    return temp; // TODO
   }
 
   /**
@@ -155,7 +175,17 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testAddCandidate() {
-    return false; // TODO
+    Election election = new Election("these tester methods are killing me", 20);
+    election.addCandidate(new Candidate("mid","method"));
+    election.addCandidate(new Candidate("don't make us do this again","method"));
+    if( !(election.toString().equalsIgnoreCase(
+        "these tester methods are killing me"
+        + "\nmid (method): 0"
+        + "\ndon't make us do this again (method): 0"))) {
+      return false;
+    }
+    
+    return true; // TODO
   }
   
   /**
@@ -166,6 +196,16 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testAddCandidateExceptions() {
+    Election election = new Election("these tester methods are killing me", 20);
+    election.addCandidate(new Candidate("mid","method"));
+    election.addCandidate(new Candidate("don't make us do this again","method"));
+    try {
+      election.addCandidate(new Candidate("mid","method"));
+    }catch(IllegalArgumentException e) {
+      // this is good cuz its already in the dang candidates array
+      return true;
+      
+    }
     return false; // TODO
   }
 
@@ -176,7 +216,16 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testVote() {
-    return false; // TODO
+    Election election = new Election("these tester methods are killing me", 20);
+    Candidate c = new Candidate("mid","method");
+    election.addCandidate(c);
+    election.vote(c);
+    if(!(election.toString().equalsIgnoreCase(
+        "these tester methods are killing me"
+        + "\nmid (method): 1"))) {
+      return false;
+    }
+    return true; // TODO
   }
 
   /**
@@ -230,7 +279,25 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testRemoveCandidate() {
-    return false; // TODO
+    Election election = new Election("Sportsball", 10);
+    Candidate c1 = new Candidate("lebron james", "basketball");
+    Candidate c2 = new Candidate("messi", "soccer");
+    Candidate c3 = new Candidate("smh", "soccer");
+    election.addCandidate(c1); election.addCandidate(c2);
+    election.addCandidate(c3);
+    
+    // calling remove method
+    election.removeCandidate(c2);
+    
+    if(! (election.toString().equals(
+        "Sportsball"
+        + "\nlebron james (basketball): 0"
+        + "\nsmh (soccer): 0")) ) {
+      return false;
+    }
+    
+    
+    return true; 
   }
 
   /**
@@ -240,7 +307,27 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testRemoveCandidateExceptions() {
-    return false; // TODO
+    boolean temp = false;
+    Election election = new Election("Sportsball", 10);
+    Candidate c1 = new Candidate("lebron james", "basketball");
+    Candidate c2 = new Candidate("messi", "soccer");
+    Candidate c3 = new Candidate("smh", "soccer");
+    election.addCandidate(c1); election.addCandidate(c2);
+    try {
+      election.removeCandidate(c3);
+    } catch(NoSuchElementException e){
+      temp = true;
+    }
+    
+    boolean temp1 = false;
+    election = new Election("Sports", 10);
+    try {
+      election.removeCandidate(c1);
+    } catch (IllegalStateException e) {
+      temp1 = true;
+    }
+    
+    return temp && temp1; // TODO
   }
 
   /**
@@ -374,7 +461,7 @@ public class ElectionManagerTester {
    */
   public static void main(String[] args) {
     System.out.println("runAllRequiredTests(): " + runAllRequiredTests());
-    System.out.println("working now");
+//    System.out.println("working now");
   }
 
 

@@ -36,7 +36,7 @@ public class Election {
   // private instance variables
   private Candidate[] candidates;
   private int numCandidates;
-  private final String SEAT_NAME;
+  public final String SEAT_NAME;
  
   /**
    * constructor method of the class Election
@@ -206,11 +206,10 @@ public class Election {
     }
     // temp variables
     Election e = (Election) anObject;
-    String ts = e.toString();
-    
-    // grabs the seatname through substring and the tostring
-    String temp = ts.substring(0, ts.indexOf("\n"));
-    return SEAT_NAME.equalsIgnoreCase(temp);
+    // grabs public IV
+    String ts = e.SEAT_NAME;
+    // chceks
+    return this.SEAT_NAME.equalsIgnoreCase(ts);
     
   }
   

@@ -75,22 +75,23 @@ public class Candidate {
   public void addVote() {
     numVotes++;
   }
-  
+
+  // i wasted time on these accessor methods ig
   /*
    * Accessor method to see name
    * @return string of name
    * */
-  public String getName() {
-    return name;
-  }
+//  public String getName() {
+//    return name;
+//  }
   
   /*
    * Accessor method to see party
    * @return string of party
    * */
-  public String getParty() {
-    return party;
-  }
+//  public String getParty() {
+//    return party;
+//  }
   
   /*
    * Accessor method to see numVotes
