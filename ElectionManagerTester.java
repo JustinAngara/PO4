@@ -248,8 +248,6 @@ public class ElectionManagerTester {
       Candidate c2 = new Candidate("messi", "soccer");
       election.addCandidate(c1); election.addCandidate(c2);
     } catch (Exception e) {
-      System.out.println("Unable to continue with this test for unrelated reasons!!");
-      e.printStackTrace();
       return false;
     }
 
@@ -337,38 +335,64 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotSetup() {
-    Election election = new Election("Sportsball", 10);
-    Candidate c1 = new Candidate("lebron james", "basketball");
-    Candidate c2 = new Candidate("messi", "soccer");
-    election.addCandidate(c1); election.addCandidate(c2);
-    Election election1 = new Election("Sportsball1", 10);
-    Candidate c3 = new Candidate("lebron james", "basketball");
-    Candidate c4 = new Candidate("messi", "soccer");
-    // i changed the line below this from election.addCandidate(c4) - > election1.addCandidate(c4) cuz of compiling errors
-    election1.addCandidate(c3); election1.addCandidate(c4);
-    Ballot.addElection(election1);
-    Ballot.addElection(election);
-    Ballot ballot = new Ballot();
-    if(ballot.hasVoted("Sportsball")||ballot.hasVoted("Sportsball1")) {
-      return false;
-    }
-    ballot.vote("Sportsball", c1);
-    if(!ballot.hasVoted("Sportsball")) {
-      return false;
-    }
+    Ballot.clearElections();
     try {
-      ballot.vote("Sportsball", c2);
-      System.out.println("Error: Voting twice in the same election should throw an exception.");
-      return false;
-  } catch (IllegalStateException e) {
-      
+        // Create two elections and candidates
+        Election election = new Election("Sportsball", 10);
+        Candidate c1 = new Candidate("lebron james", "basketball");
+        Candidate c2 = new Candidate("messi", "soccer");
+        election.addCandidate(c1);
+        election.addCandidate(c2);
+    
+        Election election1 = new Election("Sportsball1", 10);
+        Candidate c3 = new Candidate("lebron james", "basketball");
+        Candidate c4 = new Candidate("messi", "soccer");
+        election1.addCandidate(c3);
+        election1.addCandidate(c4);
+    
+        // Add elections to the ballot
+        Ballot.addElection(election);
+        Ballot.addElection(election1);
+    
+        // Create a ballot
+        Ballot ballot = new Ballot();
+    
+        // Check if no votes have been made
+        if (ballot.hasVoted("Sportsball") || ballot.hasVoted("Sportsball1")) {
+            return false;
+        }
+    
+        // Cast a vote for "Sportsball"
+        ballot.vote("Sportsball", c1);
+        if (!ballot.hasVoted("Sportsball")) {
+            return false;
+        }
+    
+        // Test voting twice in the same election, which should throw an exception
+        try {
+            ballot.vote("Sportsball", c2);
+            
+            return false;
+        } catch (IllegalStateException e) {
+            // Expected behavior
+//          System.out.println("caught exception");
+        }
+    
+        // Cast a vote for "Sportsball1"
+        ballot.vote("Sportsball1", c4);
+        if (!ballot.hasVoted("Sportsball1")) {
+            return false;
+        }
+    
+        return true; // All tests passed
+    } catch (Exception e) {
+//        e.printStackTrace();
+        return false;
+    }
+
+
   }
-  ballot.vote("Sportsball1", c4);
-  if(!ballot.hasVoted("Sportsball1")) {
-    return false;
-  }
-  return true;
-  }
+  
 
   /**
    * Verifies that the Ballot two-phase setup process throws the correct type of exception(s)
@@ -377,9 +401,36 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotSetupExceptions() {
-    // try the phases out of order!
-    return false; // TODO
+    Ballot.clearElections();
+    try {
+      Ballot b = new Ballot(); // hit the catch statement
+      return false;
+    }catch(IllegalStateException e) {
+
+    }
+    
+    Election e1 = new Election("Best Pokemon", 3);
+    Ballot.addElection(e1);
+
+    try {
+        Ballot.addElection(e1); /// you can't add duplicate election
+        return false; // Should not reach here
+    } catch (IllegalArgumentException e) {
+        // good
+    }
+    
+    Ballot b = new Ballot();//officially creates the ballot, therefore, shouldn't allow any more ballots to be added
+    try {
+      
+      Ballot.addElection(new Election("Worst Football Team", 4));
+      return false; // Should not reach here
+    } catch (IllegalStateException e) {
+        // Expected exception
+    }
+    return true;
   }
+
+
 
   /**
    * Tests the Ballot vote() and hasVoted() methods in non-Exception situations.
@@ -387,9 +438,53 @@ public class ElectionManagerTester {
    * 
    * @return true if all tests pass, false otherwise
    */
+  /**
+   * Tests the Ballot vote() and hasVoted() methods in non-Exception situations.
+   * This test accounts for the fact that a bad implementation may throw an Exception.
+   * 
+   * @return true if all tests pass, false otherwise
+   */
   public static boolean testBallotVote() {
-    return false; // TODO
+    Ballot.clearElections();
+    try {
+        // Step 1: Create two elections and add them before creating any ballots
+        Election election1 = new Election("President", 5);
+        Election election2 = new Election("Senator", 5);
+        Ballot.addElection(election1);
+        Ballot.addElection(election2);
+        
+        // Step 2: Create a new ballot
+        Ballot ballot = new Ballot();
+  
+        // Step 3: Create candidates
+        Candidate candidate1 = new Candidate("John Doe", "president");
+        Candidate candidate2 = new Candidate("Jane Smith", "senator");
+        
+        election1.addCandidate(candidate1);
+        election2.addCandidate(candidate2);
+        // Step 4: Ensure both elections have not been voted on
+        if (ballot.hasVoted("President") || ballot.hasVoted("Senator")) {
+            return false;
+        }
+        System.out.println("this is fine rn");
+        // Step 5: Vote in both elections
+        ballot.vote("President", candidate1);
+        ballot.vote("Senator", candidate2);
+  
+        // Step 6: Ensure both elections have been voted on
+        if (!ballot.hasVoted("President") || !ballot.hasVoted("Senator")) {
+            System.out.println("Error: Ballot should reflect votes.");
+            return false;
+        }
+  
+        return true;
+  
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
   }
+
 
   /**
    * Verifies that the Ballot vote() and hasVoted() methods throw the correct type of
@@ -399,7 +494,21 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise 
    */
   public static boolean testBallotVoteExceptions() {
-    return false; // TODO
+    Ballot.clearElections();
+    Election e = new Election("test", 10);
+    
+    Ballot.addElection(e);
+
+    try {
+      Ballot b = new Ballot();
+      // random name
+      b.hasVoted("1");
+      return false;
+    } catch(NoSuchElementException e1) {
+     
+    }
+    
+    return true;
   }
 
   /**
@@ -407,7 +516,8 @@ public class ElectionManagerTester {
    * @return true if and only if all the tests return true, false otherwise
    */
   public static boolean runAllRequiredTests() {
-   
+
+
     boolean test1 = testCandidateConstructorAndGetters();
     System.out.println("testCandidateConstructorAndGetters(): " + (test1 ? "PASS" : "FAIL"));
     
@@ -461,7 +571,8 @@ public class ElectionManagerTester {
    */
   public static void main(String[] args) {
     System.out.println("runAllRequiredTests(): " + runAllRequiredTests());
-//    System.out.println("working now");
+
+
   }
 
 

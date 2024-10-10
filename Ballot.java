@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
 
 public class Ballot {
     private static boolean ballotsCreated = false;  
-    private static ArrayList<Election> elections = new ArrayList<>();
+    private static ArrayList<Election> elections = new ArrayList<Election>();
     private boolean[] hasVoted;
 
     /**
@@ -56,13 +56,16 @@ public class Ballot {
     public static void addElection(Election election) {
       //checking edge cases with exception throwing
         if (ballotsCreated) {
-            throw new IllegalStateException(
-                "cant add ballots created nerd.");
+            throw new IllegalStateException("cant add ballots created nerd.");
         }
-        if (elections.contains(election)) {
-            throw new IllegalArgumentException(
-                "This election is already present nerd.");
+
+        // iterates through elections arraylist and check if it equals one another
+        for(int i = 0; i < elections.size(); i++) {
+          if(elections.get(i).equals(election)) {
+            throw new IllegalArgumentException("This election is already present nerd.");
+          }
         }
+        
         //adding the new election to the array
         elections.add(election);
     }
@@ -77,8 +80,11 @@ public class Ballot {
     public boolean hasVoted(String seatName) {
       //looping through the elections array
         for (int i = 0; i < elections.size(); i++) {
+          // just in case
+          if(elections.get(i)==null) {break;}
+          
           //parsing the seat to something we can compare
-            String seat = elections.get(i).toString().split("\n")[0];
+            String seat = elections.get(i).SEAT_NAME;
             //comparing seatname
             if (seat.equals(seatName)) {
                 return hasVoted[i];  
@@ -89,33 +95,48 @@ public class Ballot {
     }
 
     /**
-     * adding votes to each candidate for the seat provided
+     * Adds a vote to the given candidate for the specified election.
      *
-     * @param Candidate candidate
-     * @param String seatName 
-     * @return void
+     * @param seatName the name of the election seat to vote for
+     * @param candidate the candidate to vote for
+     * @throws NoSuchElementException if the election or candidate is not found
      */
     public void vote(String seatName, Candidate candidate) {
-      //loop through the array of elections
+      
+        // Loop through the array of elections
         for (int i = 0; i < elections.size(); i++) {
-          //parsing seatname to something we can compare
-            String seat = elections.get(i).toString().split("\n")[0];
-            //comparing seatnames
-            if (seat.equals(seatName)) {
-              //making sure the vote hasnt yet occured
+            Election election = elections.get(i);
+
+            // Check if the seat name matches the election's seat name
+            if (election.SEAT_NAME.equals(seatName)) {
+                // Ensure the vote hasn't yet occurred
                 if (hasVoted[i]) {
-                    throw new IllegalStateException("This ballot "
-                        + "has already voted in this election nerd.");
+
+                    throw new IllegalStateException("This ballot has already voted in this election.");
                 }
-                //adding vote to candidate
-                candidate.addVote();  
-                hasVoted[i] = true; 
-                return;
+
+                // Try to vote for the candidate in the election
+                try {
+                    election.vote(candidate);
+                    hasVoted[i] = true; // Mark that a vote has been made
+                    return;
+                } catch (NoSuchElementException e) {
+                    
+                    throw new NoSuchElementException("Candidate not found in the election for seat: " + seatName);
+                }
             }
         }
-        throw new NoSuchElementException("No such election"
-            + "for the seat name: " + seatName + " nerd");
+
+        // If no election with the given seatName is found
+        throw new NoSuchElementException("No such election for the seat name: " + seatName);
     }
+    public static void clearElections() { 
+      // empties the elections arraylist and resets ballotsCreated, for testing purposes only 
+      elections = new ArrayList<Election>();
+      ballotsCreated = false;
+      
+    }
+
 
     /**
      * overriding the toString method in object to a more specialized one
